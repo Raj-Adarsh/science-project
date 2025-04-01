@@ -1,0 +1,62 @@
+name: CI Pipeline
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip' # Cache pip dependencies
+
+      - name: Install dependencies
+        run: |
+          # Ensure setup.sh is executable
+          # chmod +x scripts/setup.sh
+          .scripts/setup.sh
+
+      - name: Build Protobuf files
+        run: |
+          # Ensure build.sh is executable
+          # chmod +x scripts/build.sh
+          .scripts/build.sh
+
+      - name: Run Unit Tests
+        run: |
+          export PYTHONPATH=generated:$PYTHONPATH
+          python -m unittest discover -v -s tests/unit -p 'test_*.py'
+      - name: Run Integration Tests
+        run: |
+          export PYTHONPATH=generated:$PYTHONPATH
+          
+          # Start the server in the background
+          echo "Starting server..."
+          python3 -m backend_service.server &
+          SERVER_PID=$!
+          echo "Server PID: $SERVER_PID"
+
+          # Wait for server to start
+          echo "Waiting for server to initialize..."
+          sleep 5
+
+          # Run integration tests
+          echo "Running integration tests..."
+          python -m unittest discover -v -s tests/integration -p 'test_*.py' # Added -v
+          TEST_EXIT_CODE=$? # Capture exit code
+
+          # Stop the server regardless of test outcome
+          echo "Stopping server..."
+          kill $SERVER_PID
+          # Wait a moment to ensure the process is terminated
+          sleep 2
+
+          # Exit with the test exit code
+          exit $TEST_EXIT_CODE
