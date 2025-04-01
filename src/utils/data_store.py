@@ -1,11 +1,14 @@
 import redis
 import uuid
 import json
+import os
 from generated.heartrate_service_pb2 import HeartRateMeasurement, HeartRateStats, AlertType
-from src.utils import metrics  # Import the metrics module
+from src.utils import metrics
 
 class RedisDataStore:
-    def __init__(self, redis_url="redis://localhost:6379/0"):
+    def __init__(self, redis_url=None):
+        if redis_url is None:
+            redis_url = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
         self.redis = redis.StrictRedis.from_url(redis_url, decode_responses=True)
         self.key = "heart_rate_measurements"  # Redis key to store measurements
 
@@ -26,7 +29,7 @@ class RedisDataStore:
                 metrics.record_alert(AlertType.Name(AlertType.LOW_HEART_RATE))
             else:  # bpm > 150
                 metrics.record_alert(AlertType.Name(AlertType.HIGH_HEART_RATE))
-        
+
         return measurement_id
 
     def get_recent_measurements(self, count):
@@ -78,5 +81,6 @@ _data_store = None
 def get_data_store():
     global _data_store
     if _data_store is None:
-        _data_store = RedisDataStore()
+        redis_url = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
+        _data_store = RedisDataStore(redis_url)
     return _data_store
