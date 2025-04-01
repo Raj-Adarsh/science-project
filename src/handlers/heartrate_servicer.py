@@ -1,16 +1,12 @@
 import grpc
 import time
-# from proto import heartrate_service_pb2 as pb2
-# from proto import heartrate_service_pb2_grpc as pb2_grpc
-
-from backend_service.utils import metrics
+from src.utils import metrics
 from generated import heartrate_service_pb2_grpc as pb2_grpc
 from generated import heartrate_service_pb2 as pb2
-
-from backend_service.handlers.submit_heartrate import SubmitHeartrateHandler
-from backend_service.handlers.stream_heartrate import StreamHeartRateHandler
-from backend_service.handlers.get_heartrate_status import GetHeartRateStatusHandler
-from backend_service.handlers.calculate_exercise_zones import CalculateExerciseZonesHandler
+from src.handlers.submit_heartrate import SubmitHeartrateHandler
+from src.handlers.stream_heartrate import StreamHeartRateHandler
+from src.handlers.get_heartrate_status import GetHeartRateStatusHandler
+from src.handlers.calculate_exercise_zones import CalculateExerciseZonesHandler
 
 class HeartRateMonitorServicer(pb2_grpc.HeartRateMonitorServicer):
     def __init__(self):

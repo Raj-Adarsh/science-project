@@ -1,11 +1,8 @@
 import unittest
 from unittest.mock import MagicMock, patch
 import time
-
-# from proto import heartrate_service_pb2 as pb2
 from generated import heartrate_service_pb2 as pb2
-
-from backend_service.handlers.submit_heartrate import SubmitHeartrateHandler
+from src.handlers.submit_heartrate import SubmitHeartrateHandler
 
 class TestSubmitHeartrateHandler(unittest.TestCase):
     def setUp(self):
@@ -14,8 +11,8 @@ class TestSubmitHeartrateHandler(unittest.TestCase):
         self.mock_logger = MagicMock()
         self.mock_context = MagicMock()
 
-        with patch('backend_service.handlers.submit_heartrate.data_store.get_data_store', return_value=self.mock_store):
-            with patch('backend_service.handlers.submit_heartrate.logger.get_logger', return_value=self.mock_logger):
+        with patch('src.handlers.submit_heartrate.data_store.get_data_store', return_value=self.mock_store):
+            with patch('src.handlers.submit_heartrate.logger.get_logger', return_value=self.mock_logger):
                 self.handler = SubmitHeartrateHandler()
 
     def test_handle_success_normal_bpm(self):

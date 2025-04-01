@@ -1,11 +1,8 @@
 import unittest
 from unittest.mock import MagicMock, patch, call
 import time
-
-# from proto import heartrate_service_pb2 as pb2
 from generated import heartrate_service_pb2 as pb2
-
-from backend_service.handlers.stream_heartrate import StreamHeartRateHandler
+from src.handlers.stream_heartrate import StreamHeartRateHandler
 
 class TestStreamHeartrateHandler(unittest.TestCase):
     def setUp(self):
@@ -14,8 +11,8 @@ class TestStreamHeartrateHandler(unittest.TestCase):
         self.mock_logger = MagicMock()
         self.mock_context = MagicMock() # Mock gRPC context
 
-        with patch('backend_service.handlers.stream_heartrate.data_store.get_data_store', return_value=self.mock_store):
-            with patch('backend_service.handlers.stream_heartrate.logger.get_logger', return_value=self.mock_logger):
+        with patch('src.handlers.stream_heartrate.data_store.get_data_store', return_value=self.mock_store):
+            with patch('src.handlers.stream_heartrate.logger.get_logger', return_value=self.mock_logger):
                 self.handler = StreamHeartRateHandler()
 
     def test_stream_success_and_alerts(self):

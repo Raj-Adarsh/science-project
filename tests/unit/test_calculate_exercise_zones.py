@@ -2,11 +2,8 @@ import unittest
 from unittest.mock import MagicMock, patch
 import time
 import grpc
-
-# from proto import heartrate_service_pb2 as pb2
 from generated import heartrate_service_pb2 as pb2
-
-from backend_service.handlers.calculate_exercise_zones import CalculateExerciseZonesHandler
+from src.handlers.calculate_exercise_zones import CalculateExerciseZonesHandler
 
 class TestCalculateExerciseZonesHandler(unittest.TestCase):
 
@@ -16,7 +13,7 @@ class TestCalculateExerciseZonesHandler(unittest.TestCase):
         self.mock_context = MagicMock()
 
         # Patch logger used by the handler
-        with patch('backend_service.handlers.calculate_exercise_zones.logger.get_logger', return_value=self.mock_logger):
+        with patch('src.handlers.calculate_exercise_zones.logger.get_logger', return_value=self.mock_logger):
             self.handler = CalculateExerciseZonesHandler()
             self.handler.interval_seconds = 5 # Make interval explicit for tests
 
