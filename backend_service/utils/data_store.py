@@ -3,6 +3,7 @@ import uuid
 import json
 # from proto.heartrate_service_pb2 import HeartRateMeasurement, HeartRateStats, AlertType
 from generated.heartrate_service_pb2 import HeartRateMeasurement, HeartRateStats, AlertType
+from backend_service.utils import metrics  # Import the metrics module
 
 class RedisDataStore:
     def __init__(self, redis_url="redis://localhost:6379/0"):
@@ -20,6 +21,13 @@ class RedisDataStore:
         }
         # Append the measurement as a JSON string to the Redis list.
         self.redis.rpush(self.key, json.dumps(measurement))
+        # Record metrics if alert is triggered
+        if triggered_alert:
+            if bpm < 50:
+                metrics.record_alert(AlertType.Name(AlertType.LOW_HEART_RATE))
+            else:  # bpm > 150
+                metrics.record_alert(AlertType.Name(AlertType.HIGH_HEART_RATE))
+        
         return measurement_id
 
     def get_recent_measurements(self, count):
