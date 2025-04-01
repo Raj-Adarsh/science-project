@@ -228,7 +228,7 @@ The service uses a dedicated validator module (`src/utils/validator.py`) to vali
 ### Data Storage
 
 Heart rate data is stored in Redis, providing:
-- Fast in-memory operations
+- Extremely Fast in-memory operations
 - Built-in time-series capabilities
 - Support for atomic operations
 
@@ -271,6 +271,24 @@ Both directories are automatically created and managed by the application, requi
 
 4. **Centralized Validation**: Dedicated validator module ensures consistent data validation across all endpoints.
 
+5. **Docker and Docker Compose**: Used for environment consistency and ease of deployment across different platforms.
+
+6. **gRPC Communication**: Provides a high-performance, type-safe communication mechanism supporting both unary and streaming RPCs.
+
+## Discussion of Pros and Cons
+
+- Pros
+
+1. **Performace and Scalability**: gRPC offers high throughput and low latency for both unary and streaming calls. Redis provides fast data operations, making the system responsive and scalable.
+2. **Modularity**: The project is organized into distinct modules (handlers, utilities, tests etc.), making it easy to maintain, extend, and test individual components.
+3. **Observability**: Prometheus metrics and robust logging provide excellent insights into system performance and enable proactive troubleshooting.
+4. **Containerization**: Docker and Docker Compose simplify deployment and ensure consistent environments across development, testing, and production.
+
+- Cons
+
+1. **Complexity**: Using gRPC, Redis, and Prometheus together introduces a learning curve, especially for teams used to traditional REST APIs.
+2. **Operational Overhead**: Running additional infrastructure components (e.g., Redis, Prometheus) requires monitoring and maintenance.
+3. **Resource Consumption**: While each component is optimized for performance, the integration of multiple services (especially in containerized environments) can lead to increased resource usage compared to a simpler monolithic approach.
 
 ## Testing Stratgy
 
