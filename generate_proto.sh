@@ -1,5 +1,4 @@
 #!/bin/bash
-
 PROTO_DIR="."
 OUT_DIR="."
 PROTO_FILE="heartrate_service.proto"
