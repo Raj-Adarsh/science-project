@@ -99,6 +99,10 @@ This Python project implements a service that processes heart rate data, validat
    # Or directly with Python:
    python -m unittest discover tests
    ```
+- **Note**: Ensure you have `ghz` installed on your machine for load testing. On macOS, you can install it using Homebrew:
+    ```bash
+    brew install ghz
+    ```
 
 ### Option 2: Using Docker (Recommended)
 
