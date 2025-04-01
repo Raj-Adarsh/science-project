@@ -7,6 +7,11 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis # Use the official Redis image
+        ports:
+          - 6379:6379 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -20,43 +25,39 @@ jobs:
       - name: Install dependencies
         run: |
           # Ensure setup.sh is executable
-          # chmod +x scripts/setup.sh
-          .scripts/setup.sh
+          chmod +x scripts/setup.sh
+          ./scripts/setup.sh
 
+      - name: Install ghz (Load Testing Tool)
+        run: |
+          echo "Downloading ghz..."
+          curl -fSL -o ghz.tar.gz "https://github.com/bojand/ghz/releases/download/v0.120.0/ghz-linux-x86_64.tar.gz"
+          
+          echo "Checking downloaded file type..."
+          file ghz.tar.gz
+          
+          echo "Extracting ghz..."
+          tar -xzf ghz.tar.gz
+          
+          echo "Moving ghz to /usr/local/bin..."
+          sudo mv ghz /usr/local/bin/
+          
+          echo "Verifying ghz installation..."
+          ghz --version
+          
       - name: Build Protobuf files
         run: |
           # Ensure build.sh is executable
-          # chmod +x scripts/build.sh
-          .scripts/build.sh
+          chmod +x scripts/build.sh
+          ./scripts/build.sh
 
-      - name: Run Unit Tests
+      - name: Start gRPC Server for Load Tests
         run: |
-          export PYTHONPATH=generated:$PYTHONPATH
-          python -m unittest discover -v -s tests/unit -p 'test_*.py'
-      - name: Run Integration Tests
+          chmod +x scripts/run.sh
+          ./scripts/run.sh server &
+
+      - name: Run Tests - unittest, integration, and performance
         run: |
-          export PYTHONPATH=generated:$PYTHONPATH
-          
-          # Start the server in the background
-          echo "Starting server..."
-          python3 -m backend_service.server &
-          SERVER_PID=$!
-          echo "Server PID: $SERVER_PID"
-
-          # Wait for server to start
-          echo "Waiting for server to initialize..."
-          sleep 5
-
-          # Run integration tests
-          echo "Running integration tests..."
-          python -m unittest discover -v -s tests/integration -p 'test_*.py' # Added -v
-          TEST_EXIT_CODE=$? # Capture exit code
-
-          # Stop the server regardless of test outcome
-          echo "Stopping server..."
-          kill $SERVER_PID
-          # Wait a moment to ensure the process is terminated
-          sleep 2
-
-          # Exit with the test exit code
-          exit $TEST_EXIT_CODE
+          # Ensure test.sh is executable
+          chmod +x scripts/test.sh
+          ./scripts/test.sh
