@@ -53,30 +53,11 @@ jobs:
 
       - name: Start gRPC Server for Load Tests
         run: |
-          # export PYTHONPATH=generated:$PYTHONPATH
-          # echo "Starting server for load tests..."
-          # python3 -m backend_service.server &
-          # SERVER_PID=$!
-          # echo "Server started with PID $SERVER_PID"
-          # Ensure run.sh is executable
           chmod +x scripts/run.sh
           ./scripts/run.sh server &
-          SERVER_PID=$!
-          echo "Server started with PID $SERVER_PID"
-          # Wait for the server to start
-          sleep 5
 
       - name: Run Tests - unittest, integration, and performance
         run: |
           # Ensure test.sh is executable
           chmod +x scripts/test.sh
           ./scripts/test.sh
-
-          # Stop the server regardless of test outcome
-          echo "Stopping server..."
-          kill $SERVER_PID
-          # Wait a moment to ensure the process is terminated
-          sleep 2
-
-          # Exit with the test exit code
-          exit $TEST_EXIT_CODE
