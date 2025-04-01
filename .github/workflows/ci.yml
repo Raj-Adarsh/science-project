@@ -20,13 +20,13 @@ jobs:
       - name: Install dependencies
         run: |
           # Ensure setup.sh is executable
-          # chmod +x scripts/setup.sh
+          chmod +x scripts/setup.sh
           ./scripts/setup.sh
 
       - name: Build Protobuf files
         run: |
           # Ensure build.sh is executable
-          # chmod +x scripts/build.sh
+          chmod +x scripts/build.sh
           ./scripts/build.sh
 
       - name: Run Unit Tests
