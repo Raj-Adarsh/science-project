@@ -1,6 +1,9 @@
 import grpc
-from proto import heartrate_service_pb2 as pb2
-from proto import heartrate_service_pb2_grpc as pb2_grpc
+# from proto import heartrate_service_pb2 as pb2
+# from proto import heartrate_service_pb2_grpc as pb2_grpc
+
+from generated import heartrate_service_pb2_grpc as pb2_grpc
+from generated import heartrate_service_pb2 as pb2
 
 from backend_service.handlers.submit_heartrate import SubmitHeartrateHandler
 from backend_service.handlers.stream_heartrate import StreamHeartRateHandler

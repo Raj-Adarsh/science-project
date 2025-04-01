@@ -2,7 +2,8 @@
 Analyzes a batch of heart rate measurements and
 calculates the time spent in different exercise intensity zones.
 '''
-from proto import heartrate_service_pb2 as pb2
+# from proto import heartrate_service_pb2 as pb2
+from generated import heartrate_service_pb2 as pb2
 from backend_service.utils import logger, data_store
 
 import grpc

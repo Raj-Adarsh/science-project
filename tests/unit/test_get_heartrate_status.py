@@ -3,7 +3,9 @@ from unittest.mock import MagicMock, patch
 import time
 import grpc # Needed for status codes if testing context.abort path
 
-from proto import heartrate_service_pb2 as pb2
+# from proto import heartrate_service_pb2 as pb2
+from generated import heartrate_service_pb2 as pb2
+
 from backend_service.handlers.get_heartrate_status import GetHeartRateStatusHandler
 
 class TestGetHeartrateStatusHandler(unittest.TestCase):
