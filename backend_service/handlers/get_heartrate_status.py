@@ -3,7 +3,9 @@ Returns the current status of heart rate monitoring, including
 the recent measurements and any active alerts.
 '''
 import grpc
-from proto import heartrate_service_pb2 as pb2
+# from proto import heartrate_service_pb2 as pb2
+from generated import heartrate_service_pb2 as pb2
+
 from backend_service.utils import logger, data_store
 
 class GetHeartRateStatusHandler:

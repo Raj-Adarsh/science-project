@@ -2,7 +2,9 @@ import grpc
 import time
 
 from concurrent import futures
-from proto import heartrate_service_pb2_grpc as pb2_grpc
+# from proto import heartrate_service_pb2_grpc as pb2_grpc
+from generated import heartrate_service_pb2_grpc as pb2_grpc
+
 
 from backend_service.handlers.heartrate_servicer import HeartRateMonitorServicer
 from backend_service.utils.logger import get_logger
