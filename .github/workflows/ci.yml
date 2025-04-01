@@ -31,9 +31,7 @@ jobs:
       - name: Install ghz (Load Testing Tool)
         run: |
           echo "Downloading ghz..."
-          GHZ_VERSION="0.119.0"
-          ARCH="linux_x86_64"
-          curl -fSL -o ghz.tar.gz "https://github.com/bojand/ghz/releases/download/v${GHZ_VERSION}/ghz_${GHZ_VERSION}_${ARCH}.tar.gz"
+          curl -fSL -o ghz.tar.gz "https://github.com/bojand/ghz/releases/download/v0.120.0/ghz-linux-x86_64.tar.gz"
           
           echo "Checking downloaded file type..."
           file ghz.tar.gz
@@ -53,33 +51,26 @@ jobs:
           chmod +x scripts/build.sh
           ./scripts/build.sh
 
-      - name: Run Unit Tests
+      - name: Start gRPC Server for Load Tests
         run: |
-          export PYTHONPATH=generated:$PYTHONPATH
-          python -m unittest discover -v -s tests/unit -p 'test_*.py'
-        
-      - name: Run Integration Tests
-        run: |
-          export PYTHONPATH=generated:$PYTHONPATH
-          
-          # Start the server in the background
-          echo "Starting server..."
-          chmod +x scripts/run.sh
+          # export PYTHONPATH=generated:$PYTHONPATH
+          # echo "Starting server for load tests..."
           # python3 -m backend_service.server &
+          # SERVER_PID=$!
+          # echo "Server started with PID $SERVER_PID"
+          # Ensure run.sh is executable
+          chmod +x scripts/run.sh
           ./scripts/run.sh server &
           SERVER_PID=$!
-          echo "Server PID: $SERVER_PID"
+          echo "Server started with PID $SERVER_PID"
+          # Wait for the server to start
+          sleep 5
 
-          # Wait for server to start
-          echo "Waiting for server to initialize..."
-          sleep 10
-
-          # Run integration tests
-          echo "Running integration tests..."
+      - name: Run Tests - unittest, integration, and performance
+        run: |
+          # Ensure test.sh is executable
           chmod +x scripts/test.sh
           ./scripts/test.sh
-          # python -m unittest discover -v -s tests/integration -p 'test_*.py' # Added -v
-          TEST_EXIT_CODE=$? # Capture exit code
 
           # Stop the server regardless of test outcome
           echo "Stopping server..."
