@@ -2,7 +2,11 @@
 
 ## Overview
 
-This project implements a service that processes heart rate data, validates it, generates alerts based on thresholds, and logs events appropriately. The service is defined using Protocol Buffers and provides four main endpoints.
+This Python project implements a service that processes heart rate data, validates it, generates alerts based on thresholds, and logs events appropriately. The service is defined using Protocol Buffers and provides four main endpoints.
+
+## System Architecture
+
+![Architecture Diagram](./Architecture_diagram.png)
 
 ## Features
 
@@ -10,6 +14,7 @@ This project implements a service that processes heart rate data, validates it, 
 - **Stream Heart Rate**: Stream heart rate measurements and receive immediate feedback
 - **Get Heart Rate Status**: Get the current status of heart rate monitoring
 - **Calculate Exercise Zones**: Analyze heart rate data to calculate time spent in different exercise zones
+
 
 ## Repository Structure
 
@@ -242,17 +247,54 @@ The service provides the following gRPC endpoints:
 
 For detailed API documentation, see the Proto file: `proto/heartrate_service.proto`
 
+## On-the-Fly Generated Directories
+
+During runtime, the application dynamically creates the following directories:
+
+- **`generated/`**: Stores files generated from Protocol Buffers definitions. These files are essential for gRPC communication and are recreated whenever the Proto files are updated.
+
+- **`log/`**: Contains the `server.log` file, which records significant events with a log level of `WARN` or higher. The log file is managed with a rotation policy, ensuring a new log file is created every 7 days to maintain readability and manage disk space efficiently.
+
+Both directories are automatically created and managed by the application, requiring no manual intervention.
+
 ## Design Choices
 
-1. **gRPC and Protocol Buffers**: Chosen for strong typing, efficient serialization, and built-in streaming support.
+1. **Modular Architecture**: The codebase follows a modular design with separate components for protocol definitions, server implementation, request handlers, and utilities.
 
-2. **Modular Architecture**: The codebase follows a modular design with separate components for protocol definitions, server implementation, request handlers, and utilities.
+2. **Redis for Data Storage**: Selected for its speed and suitability for time-series data. Redis object instantiation follows Lazy Singleton Design Pattern
 
-3. **Redis for Data Storage**: Selected for its speed and suitability for time-series data.
+3. **Prometheus for Metrics**: Enables real-time visibility into the system's performance and health.
 
-4. **Prometheus for Metrics**: Enables real-time visibility into the system's performance and health.
+4. **Centralized Validation**: Dedicated validator module ensures consistent data validation across all endpoints.
 
-5. **Centralized Validation**: Dedicated validator module ensures consistent data validation across all endpoints.
+
+## Testing Stratgy
+
+1. **Unit Tests**: Located in tests/unit. Each RPC handler has a corresponding test file. Uses mocks to isolate business logic.
+
+2. **Integration Tests**: Located in tests/integration. Spins up a local gRPC server in-process and tests end-to-end functionality.
+
+3. **Performance/Load Tests**: Located in tests/perf. Includes benchmarks for unary RPCs and load tests for streaming endpoints.
+
+4. **Continuous Testing**: A scripts/test.sh file runs all tests sequentially. Integrated into the CI/CD pipeline via Docker Compose.
+
+## Potential Improvements
+
+1. **Authentication and Authorization**: Add user authentication and authorization for API security
+2. **CI/CD Pipeline**: Expand the existing CI/CD pipeline to incorporate advanced automated testing, streamlined deployment workflows, and support for multiple environments. The current pipeline, defined in `.github/workflows/ci.yml`, performs basic validation of source code pushed to GitHub. Enhancements could include integration tests, performance benchmarks, and deployment to staging or production environments.
+3. **Testing Strategy**: Strengthen the testing framework by increasing unit and integration test coverage. Incorporate diverse scenarios, including unary and streaming gRPC calls, and introduce load and stress testing to evaluate system performance under high demand.
+4. **Data Retention and Log Rotation Policies**: Introduce configurable data retention policies for heart rate measurements, allowing users to define retention periods based on their needs. Additionally, implement log rotation based on file size thresholds to ensure efficient disk space management and prevent excessive log growth.
+5. **Dashboard**: Develop an interactive web dashboard for visualizing heart rate data, leveraging tools like Grafana for seamless integration with Prometheus metrics.
+6. **Memory Profiling**: Integrate Python's built-in memory profiling tools, such as `tracemalloc` or `memory_profiler`, to identify and address memory bottlenecks, ensuring optimal resource utilization.
+7. **Mobile Client**: Build a cross-platform mobile application to enable real-time heart rate monitoring and alerts on the go.
+
+## Assumptions
+
+1. The typical BPM range for adults is 40–180; values outside this range are considered invalid.
+2. Redis is used as the primary data store, and it is expected to be running (locally or in Docker).
+3. The calculation formulas used in CalculateExerciseZonesHandler are simplified and may differ from standard exercise zone calculation methods (e.g., the Karvonen formula or percentage-based methods using Max HR). Future iterations might align these calculations more closely with industry standards.
+4. The service handles up to 10 requests per second for unary calls and supports at least 5 concurrent streaming clients (Tested and verified with tests/perf)
+5. The logging configuration writes to a file with rotation, and the generated directory for protobuf files is recreated whenever the definitions change.
 
 ## Development Workflow
 
@@ -263,13 +305,3 @@ This project follows a test-driven development approach:
 3. **Run `make build-and-test`** to ensure your changes work and don't break existing functionality
 4. **Run `make validate`** to perform a complete validation of your Docker setup
 5. **Commit your changes** only if all validations pass
-
-## Potential Improvements
-
-1. **Authentication and Authorization**: Add user authentication and authorization for API security
-2. **Data Retention Policies**: Implement configurable data retention for measurements
-3. **Advanced Analytics**: Extend the service with more sophisticated heart rate analytics
-4. **Multi-tenant Support**: Enhance the system to support multiple users/devices
-5. **Dashboard**: Create a web dashboard for visualizing heart rate data
-6. **Mobile Client**: Develop a mobile client application for convenient monitoring
-7. **CI/CD Pipeline**: Set up a comprehensive CI/CD pipeline for automated testing and deployment
