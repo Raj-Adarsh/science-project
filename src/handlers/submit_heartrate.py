@@ -3,10 +3,8 @@ Receives individual heart rate measurements, validates them, and
 processes them according to the specifications.
 '''
 
-# from proto import heartrate_service_pb2 as pb2
 from generated import heartrate_service_pb2 as pb2
-
-from backend_service.utils import logger, data_store
+from src.utils import logger, data_store
 
 class SubmitHeartrateHandler:
     def __init__(self):

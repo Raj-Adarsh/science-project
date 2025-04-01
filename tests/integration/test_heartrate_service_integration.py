@@ -3,14 +3,11 @@ import grpc
 import time
 from concurrent import futures
 import threading
-
-# from proto import heartrate_service_pb2 as pb2
-# from proto import heartrate_service_pb2_grpc as pb2_grpc
 from generated import heartrate_service_pb2_grpc as pb2_grpc
 from generated import heartrate_service_pb2 as pb2
-from backend_service.server import serve
-from backend_service.handlers.heartrate_servicer import HeartRateMonitorServicer
-from backend_service.utils.data_store import get_data_store
+from src.server import serve
+from src.handlers.heartrate_servicer import HeartRateMonitorServicer
+from src.utils.data_store import get_data_store
 
 # Configuration
 TEST_PORT = 50052

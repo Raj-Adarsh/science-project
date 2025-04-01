@@ -1,15 +1,11 @@
 import grpc
 import time
 import threading
-
 from concurrent import futures
-# from proto import heartrate_service_pb2_grpc as pb2_grpc
 from generated import heartrate_service_pb2_grpc as pb2_grpc
-
-
-from backend_service.handlers.heartrate_servicer import HeartRateMonitorServicer
-from backend_service.utils.logger import get_logger
-from backend_service.utils import metrics  # Import the metrics module
+from src.handlers.heartrate_servicer import HeartRateMonitorServicer
+from src.utils.logger import get_logger
+from src.utils import metrics  # Import the metrics module
 from grpc_reflection.v1alpha import reflection
 
 def serve():

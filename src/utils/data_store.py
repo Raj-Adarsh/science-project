@@ -1,9 +1,8 @@
 import redis
 import uuid
 import json
-# from proto.heartrate_service_pb2 import HeartRateMeasurement, HeartRateStats, AlertType
 from generated.heartrate_service_pb2 import HeartRateMeasurement, HeartRateStats, AlertType
-from backend_service.utils import metrics  # Import the metrics module
+from src.utils import metrics  # Import the metrics module
 
 class RedisDataStore:
     def __init__(self, redis_url="redis://localhost:6379/0"):
