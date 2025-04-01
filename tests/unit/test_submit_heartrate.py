@@ -2,7 +2,9 @@ import unittest
 from unittest.mock import MagicMock, patch
 import time
 
-from proto import heartrate_service_pb2 as pb2
+# from proto import heartrate_service_pb2 as pb2
+from generated import heartrate_service_pb2 as pb2
+
 from backend_service.handlers.submit_heartrate import SubmitHeartrateHandler
 
 class TestSubmitHeartrateHandler(unittest.TestCase):

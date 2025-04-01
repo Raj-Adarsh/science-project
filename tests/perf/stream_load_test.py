@@ -1,8 +1,11 @@
 import threading
 import grpc
 import time
-from proto import heartrate_service_pb2 as pb2
-from proto import heartrate_service_pb2_grpc as pb2_grpc
+# from proto import heartrate_service_pb2 as pb2
+# from proto import heartrate_service_pb2_grpc as pb2_grpc
+
+from generated import heartrate_service_pb2_grpc as pb2_grpc
+from generated import heartrate_service_pb2 as pb2
 
 def stream_client(client_id, num_messages=20):
     channel = grpc.insecure_channel('localhost:50051')
