@@ -24,13 +24,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          chmod +x script/setup.sh
-          ./script/setup.sh
+          chmod +x scripts/setup.sh
+          ./scripts/setup.sh
 
       - name: Build Protobuf files
         run: |
-          chmod +x script/build.sh
-          ./script/build.sh
+          chmod +x scripts/build.sh
+          ./scripts/build.sh
 
       - name: Install ghz (Load Testing Tool)
         run: |

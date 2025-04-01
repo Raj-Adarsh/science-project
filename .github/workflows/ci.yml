@@ -33,13 +33,16 @@ jobs:
         run: |
           export PYTHONPATH=generated:$PYTHONPATH
           python -m unittest discover -v -s tests/unit -p 'test_*.py'
+        
       - name: Run Integration Tests
         run: |
           export PYTHONPATH=generated:$PYTHONPATH
           
           # Start the server in the background
           echo "Starting server..."
-          python3 -m backend_service.server &
+          chmod +x scripts/run.sh
+          # python3 -m backend_service.server &
+          ./scripts/run.sh server &
           SERVER_PID=$!
           echo "Server PID: $SERVER_PID"
 
@@ -49,7 +52,9 @@ jobs:
 
           # Run integration tests
           echo "Running integration tests..."
-          python -m unittest discover -v -s tests/integration -p 'test_*.py' # Added -v
+          chmod +x scripts/test.sh
+          ./scripts/test.sh
+          # python -m unittest discover -v -s tests/integration -p 'test_*.py' # Added -v
           TEST_EXIT_CODE=$? # Capture exit code
 
           # Stop the server regardless of test outcome
