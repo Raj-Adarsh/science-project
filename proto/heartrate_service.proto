@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package heartrate;
+
+service HeartRateMonitor {
+  // Submit a new heart rate measurement
+  rpc SubmitHeartRate(HeartRateRequest) returns (HeartRateResponse) {}
+  
+  // Stream heart rate measurements and receive immediate feedback
+  rpc StreamHeartRate(stream HeartRateRequest) returns (stream HeartRateResponse) {}
+  
+  // Get the current status of heart rate monitoring
+  rpc GetHeartRateStatus(StatusRequest) returns (StatusResponse) {}
+  
+  // Analyze heart rate data to calculate time spent in different exercise zones
+  rpc CalculateExerciseZones(ExerciseZoneRequest) returns (ExerciseZoneResponse) {}
+}
+
+message HeartRateRequest {
+  // Heart rate in beats per minute
+  int32 bpm = 1;
+  
+  // Timestamp of the measurement (Unix timestamp)
+  int64 timestamp = 2;
+  
+  // Optional metadata about the measurement
+  map<string, string> metadata = 3;
+}
+
+message HeartRateResponse {
+  // Whether the submission was successful
+  bool success = 1;
+  
+  // Error message if the submission failed
+  string error = 2;
+  
+  // Whether the heart rate triggered an alert
+  bool alert_triggered = 3;
+  
+  // Type of alert if triggered
+  AlertType alert_type = 4;
+}
+
+message StatusRequest {
+  // Number of recent measurements to include in the response
+  int32 recent_count = 1;
+}
+
+message StatusResponse {
+  // List of recent heart rate measurements
+  repeated HeartRateMeasurement recent_measurements = 1;
+  
+  // Current alert status
+  bool alert_active = 2;
+  
+  // Type of active alert
+  AlertType alert_type = 3;
+  
+  // Stats about recent heart rates
+  HeartRateStats stats = 4;
+}
+
+message HeartRateMeasurement {
+  // Heart rate in beats per minute
+  int32 bpm = 1;
+  
+  // Timestamp of the measurement (Unix timestamp)
+  int64 timestamp = 2;
+  
+  // Whether this measurement triggered an alert
+  bool triggered_alert = 3;
+}
+
+message HeartRateStats {
+  // Average heart rate over recent measurements
+  double average_bpm = 1;
+  
+  // Minimum heart rate in recent measurements
+  int32 min_bpm = 2;
+  
+  // Maximum heart rate in recent measurements
+  int32 max_bpm = 3;
+}
+
+enum AlertType {
+  NONE = 0;
+  LOW_HEART_RATE = 1;
+  HIGH_HEART_RATE = 2;
+}
+
+message ExerciseZoneRequest {
+  // The user's age for calculating maximum heart rate (220 - age)
+  int32 age = 1;
+  
+  // A batch of heart rate measurements to analyze
+  repeated HeartRateMeasurement measurements = 2;
+}
+
+message ExerciseZoneResponse {
+  // Time spent in each zone in seconds
+  int32 zone1_time = 1;  // 50-60% of max HR - Low intensity
+  int32 zone2_time = 2;  // 60-70% of max HR - Moderate intensity  
+  int32 zone3_time = 3;  // 70-90% of max HR - High intensity
+  
+  // Total exercise duration in seconds
+  int32 total_duration = 6;
+  
+  // Average heart rate during the exercise
+  double average_heart_rate = 7;
+}
