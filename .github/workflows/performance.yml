@@ -40,18 +40,17 @@ jobs:
       - name: Install ghz (Load Testing Tool)
         run: |
           echo "Downloading ghz..."
-          # Use -f to fail on HTTP errors, keep -L for redirects, remove -s for verbose output
-          curl -fSL -o ghz.tar.gz https://github.com/bojand/ghz/releases/download/v0.119.0/ghz_0.119.0_linux_amd64.tar.gz
+          GHZ_VERSION="0.119.0"
+          ARCH="linux_x86_64"
+          curl -fSL -o ghz.tar.gz "https://github.com/bojand/ghz/releases/download/v${GHZ_VERSION}/ghz_${GHZ_VERSION}_${ARCH}.tar.gz"
           
           echo "Checking downloaded file type..."
-          file ghz.tar.gz # See what kind of file was actually downloaded
-
+          file ghz.tar.gz
+          
           echo "Extracting ghz..."
-          # Extract the contents of the archive into the current directory
-          tar -xzf ghz.tar.gz 
+          tar -xzf ghz.tar.gz
           
           echo "Moving ghz to /usr/local/bin..."
-          # Assuming the binary inside the archive is named 'ghz'
           sudo mv ghz /usr/local/bin/
           
           echo "Verifying ghz installation..."
